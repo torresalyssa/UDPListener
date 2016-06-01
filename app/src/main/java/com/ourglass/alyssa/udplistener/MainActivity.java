@@ -30,12 +30,15 @@ import java.nio.ByteBuffer;
 public class MainActivity extends Activity {
     static final String LOG_TAG = "AUDIO_RECEIVER";
 
-    static final String INET_ADDR = "224.0.0.3";
-    static final int AUDIO_PORT = 8888;
+    static final String INET_ADDR = "239.255.255.250";
+    static final int AUDIO_PORT = 1900;
     static final int SAMPLE_RATE = 44100;
     static final int SAMPLE_INTERVAL = 20; // milliseconds
     static final int SAMPLE_SIZE = 2; // bytes per sample
     static final int BUF_SIZE = SAMPLE_INTERVAL*SAMPLE_INTERVAL*SAMPLE_SIZE*2;
+
+    static final int BIT_RATE = 64 * 1024;
+    static final int CHANNEL_COUNT = 1;
 
     private AudioTrack mTrack = null;
     private Boolean mReceiving = false;
@@ -84,8 +87,6 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 mReceiving = false;
-                socket.close();
-                mDecoder.stop();
             }
         });
 
@@ -198,8 +199,8 @@ public class MainActivity extends Activity {
         mDecoder = MediaCodec.createDecoderByType("audio/mp4a-latm");
         MediaFormat format = new MediaFormat();
         format.setString(MediaFormat.KEY_MIME, "audio/mp4a-latm");
-        format.setInteger(MediaFormat.KEY_BIT_RATE, 64 * 1024);
-        format.setInteger(MediaFormat.KEY_CHANNEL_COUNT, 1);
+        format.setInteger(MediaFormat.KEY_BIT_RATE, BIT_RATE);
+        format.setInteger(MediaFormat.KEY_CHANNEL_COUNT, CHANNEL_COUNT);
         format.setInteger(MediaFormat.KEY_SAMPLE_RATE, SAMPLE_RATE);
         format.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectHE);
         mDecoder.configure(format, null, null, 0);
